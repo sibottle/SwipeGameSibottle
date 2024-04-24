@@ -12,6 +12,10 @@ public class SwipeManager : MonoBehaviour
     [SerializeField] public float maxTime;
     [SerializeField] public int highScore = 0;
     [SerializeField] public int combo = 0;
+    [SerializeField] public AudioClip tapSound;
+    [SerializeField] public AudioClip failSound;
+    [SerializeField] public AudioSource audioSource;
+    float shake = 0;
  
     void Start()
     {
@@ -30,6 +34,8 @@ public class SwipeManager : MonoBehaviour
                 SceneManager.LoadScene("SampleScene");
             }
         }
+        shake = Mathf.MoveTowards(shake, 0, Time.deltaTime);
+        Camera.main.transform.eulerAngles = new Vector3(Random.Range(-shake,shake),Random.Range(-shake,shake),Random.Range(-shake,shake));
     }
 
     public void SpawnNew() {
@@ -42,7 +48,10 @@ public class SwipeManager : MonoBehaviour
     }
 
     public void Miss() {
+        if (combo >= 20) AudioScript.instance.PlaySound(Vector3.zero,3,1,0.8f);
+        AudioScript.instance.PlaySound(Vector2.zero,1);
         combo = 0;
         nextTime -= 0.2f;
+        shake = 0.3f;
     }
 }
